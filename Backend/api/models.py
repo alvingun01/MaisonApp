@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Product(models.Model):
@@ -22,6 +23,7 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
     id = models.CharField(max_length=100, primary_key=True)  # e.g., "ORD-1780975975411"
     date = models.DateTimeField()                            # e.g., "2026-06-09T03:32:55.411Z"
     
@@ -55,3 +57,11 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity}x {self.product.name} (Order {self.order.id})"
 
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items', null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    selected_size = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.quantity}x {self.product.name}"

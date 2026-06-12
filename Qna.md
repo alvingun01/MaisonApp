@@ -262,6 +262,80 @@ We modified [catalog.controller.js](file:///Users/alvin/Documents/MaisonApp/cont
 1. Call `HttpService.getProducts` asynchronously.
 2. Move the `$scope.products` assignment and the dependent `$scope.categories` mapping logic inside the success callback.
 
+---
+
+### 22. Designing Models, Serializers, and Views for Cart Items
+**Question:**
+> create model, serializers, and view based on this data (referencing frontend cart item object payload)
+
+**Answer / Solution:**
+We constructed a database backend structure for saving local frontend cart states:
+1. **Model:** Created the `CartItem` model in [models.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/models.py) with `product` (ForeignKey), `quantity` (PositiveIntegerField), and `selected_size` (CharField) columns, and implemented an error-free `__str__` method.
+2. **Serializer:** Defined `CartItemSerializer` in [serializers.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/serializers.py).
+3. **View:** Defined `CartItemViewSet` (a `ModelViewSet`) in [views.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/views.py).
+4. **Router:** Registered `cart-items` endpoint with `DefaultRouter` in [urls.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/urls.py).
+5. **Database Updates:** Ran `makemigrations` and `migrate` to create and update the SQLite backend database tables.
+
+---
+
+### 23. Custom User Model, Serializer, and View ViewSet
+**Question:**
+> create user model (referencing custom User model code snippet)
+
+**Answer / Solution:**
+We corrected and implemented the custom User model components:
+1. **Model Typo Correction:** Fixed `class User(models.model)` to inherit correctly from Django's capitalized base model `models.Model` inside [models.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/models.py).
+2. **Serializer:** Added `UserSerializer` to [serializers.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/serializers.py), configuring `extra_kwargs` to make the `password` field `write_only` for security.
+3. **View:** Created the `UserViewSet` inside [views.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/views.py).
+4. **URL Router:** Registered the ViewSet under the `users` route in [api/urls.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/urls.py).
+5. **Database Updates:** Generated migrations and migrated the database successfully.
+
+---
+
+### 24. Connecting Cart and Order to User in Django Models
+**Question:**
+> connect cart and order to user
+
+**Answer / Solution:**
+Established relationships between the `User` model and the `Order` and `CartItem` models:
+1. **Models:** Added `user` as a `ForeignKey` to `User` inside both `Order` and `CartItem` models in [models.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/models.py). Specified `null=True, blank=True` to support existing records and allow guest checkouts/sessions if needed.
+2. **Database Updates:** Generated and executed Django migrations successfully to update the SQLite schema.
+
+---
+
+### 25. Enabling Django User Authentication
+**Question:**
+> enable django user authenticatio
+
+**Answer / Solution:**
+Configured Django and DRF to support secure token-based user authentication:
+1. **Settings:** Activated `'rest_framework.authtoken'` in `INSTALLED_APPS` and registered default token and session authentication classes in [settings.py](file:///Users/alvin/Documents/MaisonApp/Backend/Backend/settings.py).
+2. **Models:** Replaced the custom simplified `User` model with Django's built-in `django.contrib.auth.models.User` inside [models.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/models.py).
+3. **Serializers:** Configured `UserSerializer` in [serializers.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/serializers.py) to write-only encrypt passwords via `user.set_password()` during registration.
+4. **Views:** Implemented `RegisterView` and `LoginView` inside [views.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/views.py) which generate and return a unique token. Secured `CartItemViewSet`, `OrderViewSet`, and `OrderItemViewSet` using the `IsAuthenticated` permission and filtered their queryset to return only records belonging to the logged-in user.
+5. **Routes:** Wired `/api/register` and `/api/login` endpoints in [api/urls.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/urls.py).
+6. **Migrations:** Generated and applied database migrations to implement the schema shifts.
+
+---
+
+### 26. Authentication Settings, Permissions, and Model Saving in DRF
+**Question:**
+> Explain more on:
+> 1. REST_FRAMEWORK DEFAULT_AUTHENTICATION_CLASSES in settings.py
+> 2. permission_classes = [permissions.IsAuthenticated] in views.py
+> 3. perform_create saving self.request.user in views.py
+
+**Answer / Solution:**
+Provided a detailed explanation of each mechanism:
+1. **DEFAULT_AUTHENTICATION_CLASSES:** Establishes the global list of schemes DRF uses to identify *who* is making the request (e.g. reading credentials from standard HTTP headers via `TokenAuthentication` or browser cookies via `SessionAuthentication`).
+2. **IsAuthenticated permission:** Restricts access to the endpoint, rejecting any unauthenticated requests with a `401 Unauthorized` response.
+3. **perform_create:** A ViewSet hook that intercept model creation to automatically inject the authenticated user (`self.request.user`) into the database record (preventing client-side user spoofing).
+
+
+
+
+
+
 
 
 
