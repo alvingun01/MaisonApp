@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON — Curated Objects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body ng-app="MaisonApp">
+  <!-- HEADER -->
+  <header class="site-header" id="site-header">
+    <div class="header__inner">
+      <nav class="header__nav-left">
+        <a href="#!/" ng-class="{'active': currentPath === '/'}">Shop</a>
+        <a href="#!/catalog" ng-class="{'active': currentPath === '/catalog'}">Catalog</a>
+      </nav>
+      <a href="#!/" class="header__logo">MAISON</a>
+      <nav class="header__nav-right">
+        <a href="#!/wishlist" ng-class="{'active': currentPath === '/wishlist'}">
+          Wishlist
+          <span class="nav-count" id="wishlist-count" ng-show="getWishlistCount() > 0">{{getWishlistCount()}}</span>
+        </a>
+        <a href="#!/cart" class="cart-link" ng-class="{'active': currentPath === '/cart'}">
+          Cart
+          <span class="cart-bubble" id="cart-count">{{getCartCount()}}</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TOAST -->
+  <div class="toast-container">
+    <div class="toast" id="toast">
+      <span class="toast__icon" id="toast-icon">✓</span>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+  <main>
+    <div ng-view>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <div class="footer__logo">MAISON</div>
+        <p>Curated objects for the considered life.</p>
+      </div>
+      <div class="footer__links">
+        <div>
+          <strong>Shop</strong>
+          <a ng-href="#!/">Home</a>
+          <a ng-href="#!/catalog">All Products</a>
+          <a ng-href="#!/cart">Cart</a>
+        </div>
+        <div>
+          <strong>Account</strong>
+          <a ng-href="#!/wishlist">Wishlist</a>
+          <a ng-href="#!/orders">Orders</a>
+        </div>
+      </div>
+      <div class="footer__copy">
+        <p>&copy; 2026 MAISON. All objects reserved.</p>
+        <p>Prices are in USD. All data stored locally.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="service/cart.service.js"></script>
+  <script src="service/order.service.js"></script>
+  <script src="component/product-card.component.js"></script>
+  <script src="component/wishlist-card.component.js"></script>
+  <script src="component/miniOrder-summary.component.js"></script>
+  <script src="controller/catalog.controller.js"></script>
+  <script src="controller/home.controller.js"></script>
+  <script src="controller/cart.controller.js"></script>
+  <script src="controller/wishlist.controller.js"></script>
+  <script src="controller/product.controller.js"></script>
+  <script src="controller/checkout.controller.js"></script>
+  <script src="controller/order.controller.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<main>
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="page-hero__eyebrow">Purchase History</div>
+    <h1 class="page-hero__title">My <em>Orders</em></h1>
+  </div>
+
+  <div class="orders-list" id="orders-list">
+    <!-- EMPTY STATE (hidden when orders exist) -->
+    <div class="empty-state" id="orders-empty" ng-show="orders.length === 0">
+      <div class="empty-state__glyph">◻</div>
+      <div class="empty-state__title">No orders yet</div>
+      <p class="empty-state__sub">
+        Once you place an order it will appear here. All order data is
+        stored in your browser.
+      </p>
+      <a href="#!/catalog" class="btn btn-outline">Start Shopping</a>
+    </div>
+
+    <!-- ORDER CARD 1 -->
+    <div class="order-card fade-in" ng-repeat="order in orders">
+      <div class="order-card__head">
+        <div>
+          <div class="order-card__label">Order ID</div>
+          <div class="order-card__val" style="font-family: monospace; font-size: 13px">
+            {{order.id}}
+          </div>
+        </div>
+        <div>
+          <div class="order-card__label">Date</div>
+          <div class="order-card__val">{{order.date | date}}</div>
+        </div>
+        <div>
+          <div class="order-card__label">Total</div>
+          <div class="order-card__val" style="font-family: var(--font-serif); font-size: 1.1rem">
+            {{order.total | currency}}
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-outline" ng-click="deleteOrder(order.id)">Delete Order</button>
+        </div>
+        <!-- <div>
+          <div class="order-card__label">Status</div>
+          <span class="order-status status--processing">Processing</span>
+        </div> -->
+      </div>
+
+      <div class="order-card__items">
+        <div class="order-line" ng-repeat="item in order.products">
+          <span style="font-size: 1.3rem; margin-right: 0.75rem">{{item.emoji}}</span>
+          <span class="order-line__name">{{item.name}}</span>
+          <span class="order-line__qty" style="margin-left: auto; margin-right: 1rem">× {{item.quantity}}
+          </span>
+          <span class="order-line__price">{{item.price * item.quantity | currency}}</span>
+        </div>
+      </div>
+
+      <div style="
+              padding: 0.875rem 1.5rem;
+              border-top: 1px solid var(--border);
+              background: var(--cream);
+              font-size: 12px;
+              color: var(--warm-mid);
+            ">
+        Shipped to {{order.paymentInfo.firstName}} {{order.paymentInfo.lastName}}, {{order.paymentInfo.city}},
+        {{order.paymentInfo.country}}
+      </div>
+    </div>
+
+  </div>
+  <!-- /orders-list -->
+</main>

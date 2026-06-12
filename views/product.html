@@ -1,0 +1,128 @@
+<!-- TOAST -->
+<div class="toast-container">
+  <div class="toast" id="toast">
+    <span class="toast__icon" id="toast-icon">✓</span>
+    <span id="toast-message"></span>
+  </div>
+</div>
+
+<main ng-show="currProduct">
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a ng-href="#!/">Home</a>
+    <span class="breadcrumb__sep">›</span>
+    <a ng-href="#!/catalog">Catalog</a>
+    <span class="breadcrumb__sep">›</span>
+    <span id="breadcrumb-name">{{ currProduct.name }}</span>
+  </div>
+
+  <!-- PRODUCT DETAIL -->
+  <div class="product-detail">
+    <!-- Left: Image -->
+    <div class="product-detail__img-wrap">{{ currProduct.emoji }}</div>
+
+    <!-- Right: Info -->
+    <div>
+      <div class="product-detail__category">{{ currProduct.category }}</div>
+      <h1 class="product-detail__name">{{ currProduct.name }}</h1>
+
+      <div class="product-detail__rating">
+        <div class="rating-stars">
+          <span class="star star--filled">★</span>
+          <span class="star star--filled">★</span>
+          <span class="star star--filled">★</span>
+          <span class="star star--filled">★</span>
+          <span class="star star--filled">★</span>
+        </div>
+        <span class="rating-count">{{ currProduct.rating }} · {{ currProduct.reviews }} reviews</span>
+      </div>
+
+      <div class="product-detail__price">{{ currProduct.price | currency }}</div>
+
+      <p class="product-detail__desc">
+        {{ currProduct.desc }}
+      </p>
+
+      <!-- Size picker (hidden for products without sizes) -->
+      <div id="size-section" ng-show="currProduct.sizes && currProduct.sizes.length > 0">
+        <div class="detail-option-label">Size</div>
+        <div class="size-options">
+          <button ng-repeat="size in currProduct.sizes"
+                  class="size-btn"
+                  ng-class="{'size-btn--active': selectedSize === size}"
+                  ng-click="selectSize(size)">
+            {{ size }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Quantity + Actions -->
+      <div class="detail-option-label" style="margin-top: 1rem">
+        Quantity
+      </div>
+      <div class="product-detail__actions">
+        <div class="qty-picker">
+          <button class="qty-btn" ng-click="decreaseQty()">−</button>
+          <div class="qty-picker__val">{{ quantity }}</div>
+          <button class="qty-btn" ng-click="increaseQty()">+</button>
+        </div>
+
+        <button class="btn btn-primary" ng-click="addToCart(currProduct, quantity)" style="flex: 1">
+          Add to Cart
+        </button>
+
+        <button class="btn btn-accent" ng-click="buyNow(currProduct, quantity)" style="flex: 1">
+          Buy Now
+        </button>
+
+        <button class="btn btn-outline" ng-click="addToWishlist(currProduct)" style="padding: 10px 14px" title="Wishlist">
+          ♡
+        </button>
+      </div>
+
+      <p style="font-size: 12px; color: var(--warm-mid); margin-bottom: 1.5rem; margin-top: 1rem;">
+        ✓ In stock — ships in 3–5 days.
+      </p>
+
+      <!-- Meta -->
+      <div class="product-detail__meta">
+        <div class="meta-item">
+          <div class="meta-item__label">Material</div>
+          <div class="meta-item__value">{{ currProduct.material || 'N/A' }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">Origin</div>
+          <div class="meta-item__value">{{ currProduct.origin || 'N/A' }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">SKU</div>
+          <div class="meta-item__value">{{ currProduct.sku || 'N/A' }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item__label">Category</div>
+          <div class="meta-item__value">{{ currProduct.category }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /product-detail -->
+
+  <!-- RELATED PRODUCTS -->
+  <div style="background: var(--cream2); padding: 2px 0; margin-top: 4rem" id="related-section">
+    <section class="section">
+      <div class="section__header">
+        <div>
+          <div class="section__eyebrow">From the Same Collection</div>
+          <h2 class="section__title">You May <em>Also Like</em></h2>
+        </div>
+      </div>
+      <div class="product-grid product-grid--3" id="related-grid">
+        <product-card ng-repeat="product in filteredProducts = (products | filter: applyFilter)"
+                      product="product"
+                      add-to-cart="addToCart(product)"
+                      add-to-wishlist="addToWishlist(product)">
+        </product-card>
+      </div>
+    </section>
+  </div>
+</main>

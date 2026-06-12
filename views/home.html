@@ -1,0 +1,41 @@
+<section class="hero">
+  <div class="hero__left">
+    <div class="hero__text">
+      <div class="hero__eyebrow">Welcome to MAISON</div>
+      <h1 class="hero__title">Objects for the <br><em>considered</em><br>life.</h1>
+      <p class="hero__sub">
+        Explore our curated collection of hand-crafted items, selected for beauty, utility, and durability.
+      </p>
+      <div style="display: flex; gap: 1rem">
+        <a href="#!/catalog" class="btn btn-accent" style="padding: 14px 28px; font-size: 12px">
+          Shop the Catalog
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="hero__right" ng-if="randomProduct">
+    <div class="hero__product-showcase">
+      <a ng-href="#!/product/{{randomProduct.id}}">
+        <div style="
+              width: 100%;
+              aspect-ratio: 3/4;
+              background: var(--cream2);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 8rem;
+              border-radius: 2px;
+              font-family: var(--font-serif);
+            ">
+          {{randomProduct.emoji}}
+        </div>
+      </a>
+      <div class="hero__product-badge">
+        <div class="hero__badge-label">Today's Selection</div>
+        <div class="hero__badge-name">{{randomProduct.name}}</div>
+        <div class="hero__badge-price">${{randomProduct.price}}</div>
+      </div>
+    </div>
+  </div>
+</section>

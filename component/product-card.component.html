@@ -1,0 +1,33 @@
+<div class="product-card fade-in">
+    <div class="product-card__img-wrap">
+        <div class="product-card__img">{{$ctrl.product.emoji}}</div>
+        <span class="product-card__badge badge--new">{{$ctrl.product.badge}}</span>
+        <button class="product-card__wishlist" ng-click="$ctrl.onClickWishlist()" title="Add to Wishlist">
+            ♡
+        </button>
+        <div class="product-card__actions">
+            <button class="btn btn-primary" ng-click="$ctrl.onClickAddToCart()">
+                Add to Cart
+            </button>
+        </div>
+    </div>
+    <div class="product-card__info">
+        <div class="product-card__category">{{$ctrl.product.category}}</div>
+        <div class="product-card__name">
+            <a ng-href="#!/product/{{$ctrl.product.id}}">{{$ctrl.product.name}}</a>
+        </div>
+        <div class="product-card__price-row">
+            <span class="product-card__price">${{$ctrl.product.price}}</span>
+        </div>
+        <div class="product-card__rating">
+            <span class="star star--filled">★</span><span class="star star--filled">★</span><span
+                class="star star--filled">★</span><span class="star star--filled">★</span><span
+                class="star star--filled">★</span>
+            <span style="
+            font-size: 11px;
+            color: var(--warm-mid);
+            margin-left: 4px;
+            ">{{$ctrl.product.reviews}}</span>
+        </div>
+    </div>
+</div>

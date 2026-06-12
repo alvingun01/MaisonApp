@@ -1,0 +1,290 @@
+<main>
+  <!-- STEP INDICATOR -->
+  <div style="
+          background: var(--white);
+          border-bottom: 1px solid var(--border);
+          padding: 1.25rem 2.5rem;
+        ">
+    <div style="
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 0;
+          " id="step-indicator">
+      <!-- Step 1 -->
+      <div style="display: flex; align-items: center; gap: 0.5rem">
+        <div class="checkout-section__num" ng-class="{'checkout-section__num_active': step === 1}">
+          1
+        </div>
+        <span style="
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: var(--black);
+              ">Delivery</span>
+      </div>
+      <div style="
+              width: 40px;
+              height: 1px;
+              background: var(--border);
+              margin: 0 0.5rem;
+            " id="step-line-1"></div>
+
+      <!-- Step 2 -->
+      <div style="display: flex; align-items: center; gap: 0.5rem">
+        <div class="checkout-section__num" ng-class="{'checkout-section__num_active': step === 2}">
+          2
+        </div>
+        <span style="
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: var(--warm-mid);
+              " id="step-label-2">Payment</span>
+      </div>
+      <div style="
+              width: 40px;
+              height: 1px;
+              background: var(--border);
+              margin: 0 0.5rem;
+            " id="step-line-2"></div>
+
+      <!-- Step 3 -->
+      <div style="display: flex; align-items: center; gap: 0.5rem">
+        <div class="checkout-section__num" ng-class="{'checkout-section__num_active': step === 3}">
+          3
+        </div>
+        <span style="
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: var(--warm-mid);
+              " id="step-label-3">Confirmed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: Delivery Address ── -->
+  <div class="checkout-layout" ng-show="step === 1">
+    <div>
+      <form name="addrForm" novalidate ng-submit="nextStep()">
+        <div class="checkout-section">
+          <div class="checkout-section__title">
+            <span class="checkout-section__num">1</span>
+            Delivery Address
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="addr-first">First Name *</label>
+              <input class="form-control" type="text" ng-model="firstName" placeholder="Ada" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addr-last">Last Name *</label>
+              <input class="form-control" type="text" ng-model="lastName" placeholder="Lovelace" required />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="addr-email">Email *</label>
+              <input class="form-control" type="email" ng-model="email" placeholder="ada@example.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addr-phone">Phone</label>
+              <input class="form-control" type="tel" ng-model="phone" placeholder="+1 555 000 0000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addr-line1">Address Line 1 *</label>
+            <input class="form-control" type="text" ng-model="line1" placeholder="Street address" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addr-line2">Address Line 2</label>
+            <input class="form-control" type="text" ng-model="line2" placeholder="Apt, suite, etc. (optional)" />
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="addr-city">City *</label>
+              <input class="form-control" type="text" ng-model="city" placeholder="New York" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addr-zip">Postcode *</label>
+              <input class="form-control" type="text" ng-model="zip" placeholder="10001" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addr-country">Country *</label>
+            <select class="form-control" ng-model="country" required>
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Canada</option>
+              <option>Australia</option>
+              <option>Germany</option>
+              <option>France</option>
+              <option>Japan</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <p ng-show="addrForm.$invalid" style="color: var(--accent); font-size: 13px; margin-top: 0.5rem;">
+            Please fill in all required fields.
+          </p>
+
+          <button class="btn btn-primary" type="submit" ng-disabled="addrForm.$invalid">
+            Continue to Payment →
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Mini order summary -->
+    <mini-order-summary cart="cart"></mini-order-summary>
+  </div>
+
+  <!-- ── STEP 2: Payment ── -->
+  <div class="checkout-layout" ng-show="step === 2">
+    <div>
+      <form id="pay-form" novalidate name="payForm">
+        <div class="checkout-section">
+          <div class="checkout-section__title">
+            <span class="checkout-section__num">2</span>
+            Payment Details
+          </div>
+
+          <div class="payment-method">
+            <button type="button" class="pay-option" ng-class="{'pay-option--active': currPaymentMode==='card'}"
+              ng-click="paymentMode('card')" data-method="card">
+              💳 Card
+            </button>
+            <button type="button" class="pay-option" ng-class="{'pay-option--active': currPaymentMode==='paypal'}"
+              ng-click="paymentMode('paypal')" data-method="paypal">
+              🅿 PayPal
+            </button>
+            <button type="button" class="pay-option" ng-class="{'pay-option--active': currPaymentMode==='apple'}"
+              ng-click="paymentMode('apple')" data-method="apple">
+              Apple Pay
+            </button>
+          </div>
+
+          <!-- Card fields -->
+          <div id="card-fields">
+            <div class="form-group">
+              <label class="form-label" for="card-number">Card Number *</label>
+              <input class="form-control" type="text" placeholder="1234 5678 9012 3456" maxlength="19" required
+                ng-model="ccNumber" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="card-name">Cardholder Name *</label>
+              <input class="form-control" type="text" placeholder="Ada Lovelace" required ng-model="ccName" />
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="card-expiry">Expiry Date *</label>
+                <input class="form-control" type="text" placeholder="MM / YY" maxlength="7" required ng-model="ccExp" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="card-cvv">CVV *</label>
+                <input class="form-control" type="text" placeholder="•••" maxlength="4" required ng-model="ccCVV" />
+              </div>
+            </div>
+          </div>
+
+          <!-- PayPal placeholder -->
+          <div id="paypal-fields" style="display: none; text-align: center; padding: 2rem">
+            <p style="color: var(--warm-mid); font-size: 14px">
+              You will be redirected to PayPal to complete your payment.
+            </p>
+          </div>
+
+          <!-- Apple Pay placeholder -->
+          <div id="apple-fields" style="display: none; text-align: center; padding: 2rem">
+            <p style="color: var(--warm-mid); font-size: 14px">
+              Use Touch ID or Face ID to pay with Apple Pay.
+            </p>
+          </div>
+
+          <p ng-show="payForm.$invalid" style="color: var(--accent); font-size: 13px; margin-top: 0.5rem;">
+            Please fill in all payment fields.
+          </p>
+
+          <div style="display: flex; gap: 0.75rem; margin-top: 1rem">
+            <button class="btn btn-outline" type="button" ng-click="prevStep()">
+              ← Back
+            </button>
+            <button ng-disabled="payForm.$invalid" class="btn btn-primary" ng-click="nextStep()">
+              Place Order →
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Mini order summary -->
+    <mini-order-summary cart="cart"></mini-order-summary>
+  </div>
+
+  <!-- ── STEP 3: Confirmed ── -->
+  <div ng-show="step === 3">
+    <div class="order-success">
+      <div class="order-success__icon">✓</div>
+      <h1 class="order-success__title">Order <em>Confirmed!</em></h1>
+      <p class="order-success__sub">
+        Thank you for your order. We'll send a confirmation to your email
+        address. Your order will ship in 3–5 business days.
+      </p>
+      <div class="order-success__id">
+        {{order.id}}
+      </div>
+
+      <div style="
+              background: var(--white);
+              border: 1px solid var(--border);
+              padding: 1.5rem;
+              text-align: left;
+              margin-bottom: 2rem;
+              border-radius: 2px;
+            " id="confirmed-summary">
+        <div style="
+                font-family: var(--font-serif);
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 1px solid var(--border);
+              ">
+          Order Summary
+        </div>
+        <div class="summary-line" style="font-size: 13px" ng-repeat="item in order.products">
+          <span class="summary-line__label">{{item.name}} × {{item.quantity}}</span>
+          <span>{{item.price | currency}}</span>
+        </div>
+        <div class="summary-line" ng-show="order.discount > 0">
+          <span class="summary-line__label">Discount</span>
+          <span>{{order.discount | currency}}</span>
+        </div>
+        <div class="summary-line">
+          <span class="summary-line__label">Shipping</span>
+          <span>{{order.shippingCost | currency}}</span>
+        </div>
+        <div class="summary-line summary-line--total">
+          <span class="summary-line__label">Total</span>
+          <span style="font-family: var(--font-serif)">{{order.total | currency}}</span>
+        </div>
+      </div>
+
+      <div style="color: var(--warm-mid); font-size: 13px; margin-bottom: 2rem" id="confirmed-address">
+        Shipped to — —, —, —
+      </div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center">
+        <a ng-href="#!/orders" class="btn btn-outline" style="padding: 12px 24px">View Orders</a>
+        <a ng-href="#!/catalog" class="btn btn-primary" style="padding: 12px 28px">Continue Shopping</a>
+      </div>
+    </div>
+  </div>
+</main>

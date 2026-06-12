@@ -1,0 +1,19 @@
+<div class="order-summary">
+    <div class="order-summary__title">Your Order</div>
+    <div>
+        <div class="summary-line" ng-repeat="p in $ctrl.cart">
+            <span class="summary-line__label">{{p.name}} × {{p.quantity}}</span>
+            <span>{{$ctrl.getItemSubtotal(p) | currency}}</span>
+        </div>
+    </div>
+    <div>
+        <div class="summary-line">
+            <span class="summary-line__label">Shipping</span>
+            <span>{{$ctrl.getShipping()|currency}}</span>
+        </div>
+    </div>
+    <div class="summary-line summary-line--total">
+        <span class="summary-line__label">Total</span>
+        <span>{{$ctrl.getTotal() | currency}}</span>
+    </div>
+</div>

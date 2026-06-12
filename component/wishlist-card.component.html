@@ -1,0 +1,31 @@
+<div class="product-card fade-in">
+    <div class="product-card__img-wrap">
+        <a ng-href="#!/product/{{$ctrl.product.id}}" class="product-card__img">
+            {{$ctrl.product.emoji}}
+        </a>
+        <div class="product-card__actions">
+            <button class="btn btn-primary" ng-click="$ctrl.handleMoveToCart()">
+                Move to Cart
+            </button>
+        </div>
+    </div>
+    <div class="product-card__info" style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              ">
+        <div>
+            <div class="product-card__category">{{$ctrl.product.category}}</div>
+            <div class="product-card__name">
+                <a ng-href="#!/product/{{$ctrl.product.id}}">{{$ctrl.product.name}}</a>
+            </div>
+            <div class="product-card__price-row">
+                <span class="product-card__price">${{$ctrl.product.price}}</span>
+            </div>
+        </div>
+        <button class="btn btn-danger" style="padding: 8px 12px; flex-shrink: 0"
+            ng-click="$ctrl.handleRemoveFromWishlist()">
+            ✕
+        </button>
+    </div>
+</div>

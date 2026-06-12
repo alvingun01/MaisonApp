@@ -1,0 +1,34 @@
+<!-- TOAST -->
+<div class="toast-container">
+  <div class="toast" id="toast">
+    <span class="toast__icon" id="toast-icon">✓</span>
+    <span id="toast-message"></span>
+  </div>
+</div>
+
+<main>
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="page-hero__eyebrow">Saved Objects</div>
+    <h1 class="page-hero__title">Your <em>Wishlist</em></h1>
+    <p class="page-hero__sub">{{getWishlistCount()}} saved</p>
+  </div>
+
+  <!-- EMPTY STATE (hidden when wishlist has items) -->
+  <div class="empty-state" id="wishlist-empty" ng-show="getWishlistCount() === 0">
+    <div class="empty-state__glyph">♡</div>
+    <div class="empty-state__title">Your wishlist is empty</div>
+    <p class="empty-state__sub">
+      Tap the heart on any product to save it here for later.
+    </p>
+    <a href="#!/catalog" class="btn btn-outline">Browse the Catalog</a>
+  </div>
+
+  <!-- WISHLIST GRID -->
+  <div class="wishlist-grid" ng-show="getWishlistCount() > 0">
+    <div class="product-grid product-grid--3">
+      <wishlist-card ng-repeat="(id, product) in wishlist" product="product" move-to-cart="moveToCart(product)"
+        remove-from-wishlist="removeItem(product)"></wishlist-card>
+    </div>
+  </div>
+</main>

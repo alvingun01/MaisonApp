@@ -1,0 +1,138 @@
+<body>
+  <!-- TOAST -->
+  <div class="toast-container">
+    <div class="toast" id="toast">
+      <span class="toast__icon" id="toast-icon">✓</span>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <main>
+    <!-- PAGE HERO -->
+    <div class="page-hero">
+      <div class="page-hero__eyebrow">Your Selections</div>
+      <h1 class="page-hero__title">Shopping <em>Cart</em></h1>
+      <p class="page-hero__sub" id="cart-subtitle">{{getCartCount()}} items selected</p>
+    </div>
+
+    <!-- EMPTY STATE (hidden when cart has items) -->
+    <div class="empty-state" id="cart-empty" style="display: none">
+      <div class="empty-state__glyph">◻</div>
+      <div class="empty-state__title">Your cart is empty</div>
+      <p class="empty-state__sub">
+        Explore our catalog and find objects you'll love for years.
+      </p>
+      <a href="catalog.html" class="btn btn-outline">Browse the Catalog</a>
+    </div>
+
+    <!-- CART CONTENT -->
+    <div class="cart-layout" id="cart-content">
+      <!-- Items column -->
+      <div>
+        <div class="cart-table-head">
+          <span>Product</span>
+          <span>Unit Price</span>
+          <span>Quantity</span>
+          <span style="text-align: right">Total</span>
+        </div>
+
+        <!-- Cart items list -->
+        <div>
+          <div class="cart-item" ng-repeat="item in cart">
+            <div class="cart-item__product">
+              <div class="cart-item__img">{{ item.emoji }}</div>
+              <div>
+                <a ng-href="#!/product/{{ item.id }}" class="cart-item__name">{{ item.name }}</a>
+                <div class="cart-item__meta">{{ item.category }}</div>
+                <button class="cart-item__remove" ng-click="removeFromCart(item)">
+                  Remove
+                </button>
+              </div>
+            </div>
+            <div class="cart-item__price">{{ item.price | currency }}</div>
+            <div class="cart-item__actions">
+              <div class="qty-picker">
+                <button class="qty-btn-dec" ng-click="decreaseQuantity(item)">−</button>
+                <div class="qty-picker__val">{{ item.quantity }}</div>
+                <button class="qty-btn-inc" ng-click="increaseQuantity(item)">+</button>
+              </div>
+            </div>
+            <div class="cart-item__subtotal" style="text-align: right">
+              {{ getItemSubtotal(item) | currency }}
+            </div>
+          </div>
+          <!-- /cart-items -->
+
+          <!-- PROMO CODE -->
+          <div style="margin-top: 1.5rem">
+            <div style="
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--warm-mid);
+                margin-bottom: 0.5rem;
+              ">
+              Promo Code
+            </div>
+            <div style="display: flex; gap: 0.5rem">
+              <input class="form-control" style="max-width: 220px" type="text" id="promo-input"
+                placeholder="e.g. WELCOME20" ng-model="promoCode" />
+              <button class="btn btn-outline" ng-click="applyPromo()">
+                Apply
+              </button>
+            </div>
+            <p id="promo-msg" style="font-size: 12px; margin-top: 0.5rem; display: none"></p>
+            <p style="
+                font-size: 11px;
+                color: var(--warm-mid);
+                margin-top: 0.5rem;
+              ">
+              Try: MAISON10 · WELCOME20 · SAVE15
+            </p>
+          </div>
+        </div>
+        <!-- /items column -->
+
+        <!-- ORDER SUMMARY -->
+        <div class="order-summary" id="order-summary">
+          <div class="order-summary__title">Order Summary</div>
+
+          <div class="summary-line">
+            <span class="summary-line__label">Subtotal</span>
+            <span>{{ getSubtotal() | currency }}</span>
+          </div>
+
+          <div class="summary-line" id="discount-line" ng-if="promoCode !== ''">
+            <span class="summary-line__label" style="color: var(--accent2)">Discount</span>
+            <span id="summary-discount" style="color: var(--accent2)">− {{getDiscount()|currency}}</span>
+          </div>
+
+          <div class="summary-line">
+            <span class="summary-line__label">Shipping</span>
+            <span id="summary-shipping">{{getShipping()|currency}}</span>
+          </div>
+
+          <div class="summary-line summary-line--total">
+            <span class="summary-line__label">Total</span>
+            <span id="summary-total">{{getTotal()|currency}}</span>
+          </div>
+
+          <p id="shipping-msg" style="font-size: 11px; color: var(--warm-mid); margin: 1rem 0">
+            Add $<span id="shipping-remaining">{{getShippingRemaining()|currency}}</span> more for free shipping
+          </p>
+
+          <a ng-href="#!/checkout" class="btn btn-primary btn-full" style="margin-top: 1rem; padding: 14px"
+            id="checkout-btn">
+            Proceed to Checkout →
+          </a>
+          <a ng-href="#!/catalog" class="btn btn-ghost btn-full" style="margin-top: 0.5rem">
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+      <!-- /cart-layout -->
+  </main>
+
+</body>
+
+</html>
