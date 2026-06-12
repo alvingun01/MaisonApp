@@ -1,0 +1,38 @@
+# Virtual environment
+.MaisonApp/
+venv/
+ENV/
+
+# Python / Django cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+
+# Database files (Django defaults to sqlite3)
+Backend/db.sqlite3
+*.db
+*.sqlite
+*.sqlite3
+
+# macOS System files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# IDE & Editor configs
+.vscode/
+.idea/
+*.suo
+*.swp
+
+# Local environment/secrets
+.env
+.env.local
+.env.*.local
