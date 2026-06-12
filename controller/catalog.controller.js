@@ -1,12 +1,18 @@
 angular.module('MaisonApp').controller('CatalogController', ['$scope', 'CartService', 'HttpService', function ($scope, CartService, HttpService) {
-    try {
-        // const storedProducts = localStorage.getItem("products");
-        const storedProducts = HttpService.getProducts();
-        const parsedProducts = storedProducts ? JSON.parse(storedProducts) : {};
-        $scope.products = Array.isArray(parsedProducts) ? parsedProducts : Object.values(parsedProducts);
-    } catch (e) {
-        $scope.products = [];
-    }
+    $scope.products = [];
+    $scope.categories = [];
+    $scope.selectedCategory = 'All';
+    $scope.sortBy = 'default';
+    $scope.sortPredicate = 'id';
+    $scope.sortReverse = false;
+    $scope.searchTerm = "";
+
+    HttpService.getProducts(function (response) {
+        $scope.products = response.data;
+        $scope.categories = [...new Set($scope.products.map(product => product.category))];
+    }, function (error) {
+        console.error('Error fetching products:', error);
+    });
 
     $scope.cart = CartService.cart;
 
@@ -15,12 +21,6 @@ angular.module('MaisonApp').controller('CatalogController', ['$scope', 'CartServ
     } catch (e) {
         $scope.wishlist = [];
     }
-    $scope.searchTerm = ""
-    $scope.categories = [...new Set($scope.products.map(product => product.category))];
-    $scope.selectedCategory = 'All';
-    $scope.sortBy = 'default';
-    $scope.sortPredicate = 'id';
-    $scope.sortReverse = false;
 
     $scope.changeFilter = function (category) {
         $scope.selectedCategory = category;

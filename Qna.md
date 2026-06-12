@@ -140,6 +140,137 @@ Explained that `items = OrderItemSerializer(many=True)` defines a nested relatio
 3. **Multiplicity (`many=True`):** It indicates that the `items` field is a collection (list) of multiple order items.
 4. **Validation/Creation support:** It parses and validates nested arrays of order items in incoming JSON payloads.
 
+---
+
+### 12. What is a Serializer?
+**Question:**
+> explain to me what is serializer?
+
+**Answer / Solution:**
+Explained serialization in web development and DRF:
+1. **Definition:** Serialization converts complex Python/Django object states (like database model records) into a standard transmission format (like JSON). Deserialization is the reverse.
+2. **Key Roles:** Translates database representations to/from JSON, validates incoming request payloads, and handles data creation/updates.
+
+---
+
+### 13. Serializers vs. Database Relationship Definition
+**Question:**
+> this only tells the database the relation? (referencing line 15 in serializers.py)
+
+**Answer / Solution:**
+Clarified that `items = OrderItemSerializer(many=True)` does not define the database relation itself.
+1. **Database / Model Layer:** The database relation is defined in [models.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/models.py) using the `ForeignKey` relationship field.
+2. **API / Serializer Layer:** The serializer field defines how that relationship is represented, structured, validated, and converted into/from JSON for API requests and responses.
+
+---
+
+### 14. Setting Up Routing for Order Endpoints
+**Question:**
+> what should i include in this file to hit the orders endpoints (referencing api/urls.py)
+
+**Answer / Solution:**
+Since the order views are ViewSets (`ModelViewSet`), they should be registered using Django REST Framework's `DefaultRouter`.
+We modified [urls.py](file:///Users/alvin/Documents/MaisonApp/Backend/api/urls.py) to:
+1. Import `include` and `DefaultRouter`.
+2. Instantiate `DefaultRouter(trailing_slash=False)` to align with the frontend calls (which do not append trailing slashes to the `/api/orders` paths).
+3. Register the `OrderViewSet` and `OrderItemViewSet` with the router and include the router URL patterns in `urlpatterns`.
+
+---
+
+### 15. Fetching Products from HttpService in ProductController
+**Question:**
+> change this to use get product form httpservice (referencing product.controller.js)
+
+**Answer / Solution:**
+Modified [product.controller.js](file:///Users/alvin/Documents/MaisonApp/controller/product.controller.js) to:
+1. Inject `HttpService` dependency.
+2. Call `HttpService.getProducts()` asynchronously to retrieve the product database array.
+3. Find the current active product inside the async success callback.
+4. Added robust size-parsing logic (`split(',')`) to convert `sizes` from a comma-separated database string into a JavaScript array if needed.
+
+---
+
+### 16. Connecting OrderService to Backend APIs
+**Question:**
+> change this use the get order HttpService (referencing order.service.js)
+
+**Answer / Solution:**
+Updated [order.service.js](file:///Users/alvin/Documents/MaisonApp/service/order.service.js) to perform all operations asynchronously via the backend's `HttpService` API wrappers:
+1. **Dependency Injection:** Injected the `HttpService` dependency.
+2. **Read orders:** Replaced standard synchronous localStorage read with asynchronous `HttpService.getOrders()` on initialization. To avoid breaking direct array bindings in AngularJS controllers, we updated the `orders` array reference in-place (`self.orders.length = 0; self.orders.push(...)`).
+3. **Create orders:** Updated `createOrder()` to map/flatten the frontend structure (separating `paymentInfo` and cart items) to match the relational database schema expected by the Django backend, and send it to the backend via `HttpService.createOrder()`.
+4. **Delete orders:** Updated `deleteOrder()` to make a delete request via `HttpService.deleteOrder()`.
+
+---
+
+### 17. Updating Orders via HttpService
+**Question:**
+> modify this to use the updateorder from HttpService (referencing line 69 in order.service.js)
+
+**Answer / Solution:**
+Modified the `updateOrder` method in [order.service.js](file:///Users/alvin/Documents/MaisonApp/service/order.service.js) to call `HttpService.updateOrder()`. Upon success, it updates the corresponding order object in-place inside the local `orders` array using the response data.
+
+---
+
+### 18. Seeding Products into the Backend Database
+**Question:**
+> inject this to the database (referencing PRODUCTS array in app.js)
+
+**Answer / Solution:**
+We injected the 12 products (p001 through p012) into the Django SQLite database:
+1. Created a standalone Django scripting utility `populate_products.py` mapping frontend object arrays (like sizes) to schema-compatible comma-separated strings.
+2. Ran `makemigrations` and `migrate` to set up and construct the relational order/orderitem tables.
+3. Executed the script using the project's virtualenv interpreter: `/Users/alvin/Documents/MaisonApp/.MaisonApp/bin/python populate_products.py`.
+4. Successfully populated the database and cleaned up the temporary utility script.
+
+---
+
+### 19. AngularJS `$injector:unpr` Error (Unknown Provider)
+**Question:**
+> angular.js:15697 Error: [$injector:unpr] http://errors.angularjs.org/1.8.2/$injector/unpr?p0=HttpServiceProvider%20%3C-%20HttpService%20%3C-%20HomeController ...
+
+**Answer / Solution:**
+The `$injector:unpr` error was caused by two issues:
+1. **Lowercase Module Name Casing Typo:** Inside `service/http.service.js`, the module name was declared as lowercase `"maisonApp"`, but the actual application module defined in `app.js` is uppercase `"MaisonApp"`. Because of this casing mismatch, AngularJS could not find the `HttpService` provider.
+2. **Missing Script Tag:** The file `service/http.service.js` was never imported/referenced in `index.html`.
+
+We resolved this by:
+1. Fixing the module name casing typo in [http.service.js](file:///Users/alvin/Documents/MaisonApp/service/http.service.js) to `"MaisonApp"`.
+2. Adding the script tag `<script src="service/http.service.js"></script>` to [index.html](file:///Users/alvin/Documents/MaisonApp/index.html) before any controllers/services that depend on it.
+
+---
+
+### 20. Enabling CORS for local Live Server development
+**Question:**
+> set cors to allow http://127.0.0.1:5500/
+
+**Answer / Solution:**
+Configured the Django backend to allow Cross-Origin Resource Sharing (CORS) from the local Live Server frontend origin:
+1. Installed `django-cors-headers` package in the local virtual environment.
+2. Added `'corsheaders'` to `INSTALLED_APPS` and `'corsheaders.middleware.CorsMiddleware'` to `MIDDLEWARE` inside [settings.py](file:///Users/alvin/Documents/MaisonApp/Backend/Backend/settings.py).
+3. Added `CORS_ALLOWED_ORIGINS` to allow requests from `http://127.0.0.1:5500` and `http://localhost:5500`.
+
+---
+
+### 21. Asynchronous Product Fetching in CatalogController
+**Question:**
+> correct this (referencing const storedProducts = HttpService.getProducts(); in catalog.controller.js)
+
+**Answer / Solution:**
+`HttpService.getProducts()` is an asynchronous function taking success and error callbacks rather than returning products synchronously.
+We modified [catalog.controller.js](file:///Users/alvin/Documents/MaisonApp/controller/catalog.controller.js) to:
+1. Call `HttpService.getProducts` asynchronously.
+2. Move the `$scope.products` assignment and the dependent `$scope.categories` mapping logic inside the success callback.
+
+
+
+
+
+
+
+
+
+
 
 
 

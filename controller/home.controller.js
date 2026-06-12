@@ -1,10 +1,12 @@
-angular.module('MaisonApp').controller('HomeController', ['$scope', function ($scope) {
+angular.module('MaisonApp').controller('HomeController', ['$scope', 'HttpService', function ($scope, HttpService) {
     // Fetch products from localStorage or default PRODUCTS array
     let products = [];
     try {
-        const stored = localStorage.getItem("products");
-        const parsed = stored ? JSON.parse(stored) : {};
-        products = Array.isArray(parsed) ? parsed : Object.values(parsed);
+        HttpService.getProducts(function (response) {
+            $scope.products = response.data;
+        }, function (error) {
+            console.error('Error fetching products:', error);
+        });
     } catch (e) {
         products = [];
     }

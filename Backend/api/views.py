@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics, viewsets
 
-from .models import Product, Order
-from .serializers import ProductSerializer, OrderSerializer
+from .models import Product, Order, OrderItem
+from .serializers import ProductSerializer, OrderSerializer, OrderItemSerializer
 
 # Create your views here.
 class ProductListCreate(generics.ListCreateAPIView):
