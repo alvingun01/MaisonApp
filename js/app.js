@@ -348,11 +348,39 @@ function storageSet(key, value) {
 }
 
 angular.module('MaisonApp', ['ngRoute'])
-  .config(function ($routeProvider) {
+  .factory('AuthInterceptor', ['$q', '$location', function ($q, $location) {
+    return {
+      request: function (config) {
+        config.headers = config.headers || {};
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers.Authorization = 'Token ' + token;
+        }
+        return config;
+      },
+      responseError: function (response) {
+        if (response.status === 401) {
+          localStorage.removeItem('token');
+          $location.path('/login');
+        }
+        return $q.reject(response);
+      }
+    };
+  }])
+  .config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
+    $httpProvider.interceptors.push('AuthInterceptor');
     $routeProvider
       .when('/', {
         templateUrl: 'views/home.html',
         controller: "HomeController"
+      })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: "LoginController"
+      })
+      .when('/register', {
+        templateUrl: 'views/register.html',
+        controller: "RegisterController"
       })
       .when('/catalog', {
         templateUrl: 'views/catalog.html',
@@ -385,7 +413,7 @@ angular.module('MaisonApp', ['ngRoute'])
       .otherwise({
         redirectTo: '/',
       });
-  })
+  }])
   .run(['$rootScope', '$location', '$window', "CartService", function ($rootScope, $location, $window, CartService) {
     // Load initial cart and wishlist states on $rootScope
     try {
@@ -440,17 +468,30 @@ angular.module('MaisonApp', ['ngRoute'])
     // Helper to compute total items in the cart
     $rootScope.getCartCount = function () {
       return CartService.getCartCount();
-      let count = 0;
-      angular.forEach($rootScope.cart, function (item) {
-        count += (item.quantity || 1);
-      });
-      return count;
     };
 
     $rootScope.getWishlistCount = function () {
       if (!$rootScope.wishlist) return 0;
       return Object.keys($rootScope.wishlist).length;
     };
+
+    $rootScope.isLoggedIn = function () {
+      return !!localStorage.getItem("token");
+    };
+
+    $rootScope.logout = function () {
+      localStorage.removeItem("token");
+      $location.path("/login");
+    };
+
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+      const protectedRoutes = ['/checkout'];
+      const currentRoute = $location.path();
+      if (protectedRoutes.includes(currentRoute) && !$rootScope.isLoggedIn()) {
+        event.preventDefault();
+        $location.path('/login');
+      }
+    });
 
     $rootScope.$on('$routeChangeSuccess', function () {
       $rootScope.currentPath = $location.path();

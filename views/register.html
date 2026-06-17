@@ -1,0 +1,33 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2 class="auth-title">Create Account</h2>
+    <p class="auth-subtitle">Join Maison to curator your objects</p>
+    
+    <div class="auth-error-box" ng-show="errorMsg">
+      {{errorMsg}}
+    </div>
+    
+    <form ng-submit="register()" class="auth-form">
+      <div class="auth-field">
+        <label for="username">Username</label>
+        <input type="text" id="username" ng-model="user.username" required placeholder="Choose a username" />
+      </div>
+
+      <div class="auth-field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" ng-model="user.email" required placeholder="Enter email" />
+      </div>
+      
+      <div class="auth-field">
+        <label for="password">Password</label>
+        <input type="password" id="password" ng-model="user.password" required placeholder="Create a password" />
+      </div>
+      
+      <button type="submit" class="auth-submit-btn">Sign Up</button>
+    </form>
+    
+    <p class="auth-switch-link">
+      Already have an account? <a href="#!/login">Sign in</a>
+    </p>
+  </div>
+</div>

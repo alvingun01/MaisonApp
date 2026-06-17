@@ -22,6 +22,8 @@
       </nav>
       <a href="#!/" class="header__logo">MAISON</a>
       <nav class="header__nav-right">
+        <a href="#!/login" ng-show="!isLoggedIn()" ng-class="{'active': currentPath === '/login'}">Login</a>
+        <a href="" ng-show="isLoggedIn()" ng-click="logout()">Logout</a>
         <a href="#!/wishlist" ng-class="{'active': currentPath === '/wishlist'}">
           Wishlist
           <span class="nav-count" id="wishlist-count" ng-show="getWishlistCount() > 0">{{getWishlistCount()}}</span>
@@ -89,6 +91,8 @@
   <script src="controller/product.controller.js"></script>
   <script src="controller/checkout.controller.js"></script>
   <script src="controller/order.controller.js"></script>
+  <script src="controller/login.controller.js"></script>
+  <script src="controller/register.controller.js"></script>
 </body>
 
 </html>

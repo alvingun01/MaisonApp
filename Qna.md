@@ -331,21 +331,61 @@ Provided a detailed explanation of each mechanism:
 2. **IsAuthenticated permission:** Restricts access to the endpoint, rejecting any unauthenticated requests with a `401 Unauthorized` response.
 3. **perform_create:** A ViewSet hook that intercept model creation to automatically inject the authenticated user (`self.request.user`) into the database record (preventing client-side user spoofing).
 
+---
 
+### 27. Styling Login and Register Pages and Adding Dynamic Auth State
+**Question:**
+> style login page and create register page
 
+**Answer / Solution:**
+We styled the login and register pages, and added dynamic navigation toggles to the main layout:
+1. **Styling Appended to [main.css](file:///Users/alvin/Documents/MaisonApp/css/main.css):**
+   - Added class styling for `.auth-container`, `.auth-card`, `.auth-title`, `.auth-subtitle`, `.auth-error-box`, `.auth-form`, `.auth-field`, `.auth-submit-btn`, and `.auth-switch-link`.
+   - Utilized existing Maison variables (`--cream`, `--white`, `--black`, `--border`, `--shadow`, `--accent`, etc.) to create a clean, elegant, high-contrast visual form interface consistent with the brand's luxury editorial aesthetic.
+   - Built responsive constraints (`max-width: 440px`), smooth transitions for focuses and buttons, and a keyframe-based error container shake animation.
+2. **App run configuration updated in [js/app.js](file:///Users/alvin/Documents/MaisonApp/js/app.js):**
+   - Exposed helper methods `isLoggedIn()` and `logout()` on `$rootScope` to make session status accessible to templates and routes globally.
+3. **Template updated in [index.html](file:///Users/alvin/Documents/MaisonApp/index.html):**
+   - Updated the header's navigation layout to dynamically render "Login" or "Logout" links depending on the current token presence using `ng-show` and `$rootScope` helpers.
 
+---
 
+### 28. Including Token in HTTP Requests for Orders and Cart
+**Question:**
+> include token in http request regarding orders and cart
 
+**Answer / Solution:**
+We implemented a global authentication interceptor in AngularJS to automatically attach the Django token to outgoing HTTP requests:
+1. **Added `AuthInterceptor` in [js/app.js](file:///Users/alvin/Documents/MaisonApp/js/app.js):**
+   - Defined a factory `AuthInterceptor` that intercepts outgoing requests and adds the `Authorization: Token <token>` header if a token exists in `localStorage`.
+   - The interceptor also catches `401 Unauthorized` response errors, clears the expired token from storage, and redirects the user to the `/login` route.
+   - Registered the interceptor in the AngularJS `$httpProvider.interceptors` configuration block.
+2. **Defined Cart API wrapper methods in [http.service.js](file:///Users/alvin/Documents/MaisonApp/service/http.service.js):**
+   - Added `getCartItems`, `createCartItem`, `updateCartItem`, and `deleteCartItem` methods to `HttpService` pointing to the Django `/api/cart-items` endpoints.
+   - All cart and order requests made via `HttpService` now automatically leverage the `AuthInterceptor` to supply the credentials expected by the backend viewsets.
 
+---
 
+### 29. Route Protection for Authenticated Views
+**Question:**
+> i would like for unauthenticated user should not be able to access the orders page
 
+**Answer / Solution:**
+To prevent guest users from accessing restricted sections (like order history or the checkout process), we implemented frontend route guards in AngularJS:
+1. **Registered `$routeChangeStart` Guard in [js/app.js](file:///Users/alvin/Documents/MaisonApp/js/app.js):**
+   - Added a listener for the `$routeChangeStart` event within the application's `.run()` block.
+   - Identified `/orders` and `/checkout` as protected paths.
+   - If a user attempts to navigate to these routes and is unauthenticated (`isLoggedIn()` is false), navigation is aborted using `event.preventDefault()` and they are redirected immediately to `/login`.
+2. **Re-enabled `AuthInterceptor` Redirects:**
+   - Kept `$location.path('/login')` inside `AuthInterceptor.responseError` to handle reactive token expiry during active sessions.
 
+---
 
+### 30. Get Cart Items from HttpService in Product Controller
+**Question:**
+> change product controller to get cart from httpservice
 
-
-
-
-
-
-
-
+**Answer / Solution:**
+Updated [product.controller.js](file:///Users/alvin/Documents/MaisonApp/controller/product.controller.js) to retrieve cart items asynchronously from the database backend:
+1. **Replaced localStorage fetch**: Removed the synchronous `localStorage.getItem("cart")` parser block.
+2. **Integrated HttpService API**: Added a call to `HttpService.getCartItems(success, error)` to retrieve authenticated database cart items from the `/api/cart-items` endpoint, assigning the response list to `$scope.cart` upon success.

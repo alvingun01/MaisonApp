@@ -1,7 +1,7 @@
 angular.module("MaisonApp").controller("ProductController", ['$scope', '$routeParams', '$location', 'CartService', 'HttpService', function ($scope, $routeParams, $location, CartService, HttpService) {
     const productId = $routeParams.id;
     console.log(productId);
-    
+
     $scope.products = [];
     $scope.currProduct = null;
     $scope.quantity = 1;

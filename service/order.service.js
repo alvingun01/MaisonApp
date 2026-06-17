@@ -1,4 +1,4 @@
-angular.module("MaisonApp").service("OrderService", ['HttpService', function (HttpService) {
+angular.module("MaisonApp").service("OrderService", ['HttpService', '$location', function (HttpService, $location) {
     this.order = {};
     this.orders = [];
 
@@ -12,6 +12,7 @@ angular.module("MaisonApp").service("OrderService", ['HttpService', function (Ht
                 response.data.forEach(order => self.orders.push(order));
             }
         }, function (error) {
+            $location.path("/login");
             console.error('Error fetching orders:', error);
         });
     };
