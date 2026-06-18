@@ -70,6 +70,7 @@ TEMPLATES = [
         },
     },
 ]
+APPEND_SLASH=False
 
 WSGI_APPLICATION = 'Backend.wsgi.application'
 
@@ -124,6 +125,8 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
 ]
 
 REST_FRAMEWORK = {

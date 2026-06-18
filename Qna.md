@@ -389,3 +389,23 @@ To prevent guest users from accessing restricted sections (like order history or
 Updated [product.controller.js](file:///Users/alvin/Documents/MaisonApp/controller/product.controller.js) to retrieve cart items asynchronously from the database backend:
 1. **Replaced localStorage fetch**: Removed the synchronous `localStorage.getItem("cart")` parser block.
 2. **Integrated HttpService API**: Added a call to `HttpService.getCartItems(success, error)` to retrieve authenticated database cart items from the `/api/cart-items` endpoint, assigning the response list to `$scope.cart` upon success.
+
+---
+
+### 31. TypeError in CartService.addToCart (Cannot read properties of undefined reading 'p001')
+**Question:**
+> product-card.component.js:10 add to cart
+> angular.js:15697 TypeError: Cannot read properties of undefined (reading 'p001')
+>     at angular.module.service.addToCart (cart.service.js:87:22)
+
+**Answer / Solution:**
+The error occurred because of scope issues and formatting mismatches when integrating backend database APIs:
+1. **Dynamic Scope Binding (`this`)**: Inside the success callback of `HttpService.getCartItems`, `this.cart` was being assigned. However, `this` does not refer to the service instance inside callbacks in AngularJS, causing the service's `cart` reference to remain `undefined`.
+2. **Payload/Mapping Mismatch**: The backend returns database cart records as an array of items (`[{ id, product, quantity, selected_size, user }]`), but the frontend expects `cart` to be a keyed object by product ID (`{ p001: { ... } }`).
+3. **Database ID Mismatch**: In updating or deleting items, the service was passing the product details instead of the database primary key `id` of the cart item.
+
+We resolved these issues in [cart.service.js](file:///Users/alvin/Documents/MaisonApp/service/cart.service.js) by:
+1. Initializing `self.cart = {}` synchronously at startup to prevent undefined read properties.
+2. Using a fixed local reference `self = this` throughout the service constructor to keep standard scopes valid inside callback contexts.
+3. Structuring `self.loadCart()` to map incoming database array arrays into the frontend's keyed object format, storing the database primary key in a custom `dbId` property.
+4. Rewriting CRUD operations (`addToCart`, `removeFromCart`, `increaseQuantity`, `decreaseQuantity`, `clearCart`) to use the correct `dbId` keys and correctly format payload maps when making Django REST Framework requests, while falling back gracefully to standard `localStorage` when user is unauthenticated (guest mode).
