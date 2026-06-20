@@ -57,11 +57,10 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity}x {self.product.name} (Order {self.order.id})"
 
-class CartItem(models.Model):
+class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items', null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    selected_size = models.CharField(max_length=100, blank=True, null=True)
+    content = models.JSONField()
+    cartCount = models.IntegerField()
 
     def __str__(self):
-        return f"{self.quantity}x {self.product.name}"
+        return f"{self.user.username}'s cart"
