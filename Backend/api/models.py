@@ -44,18 +44,19 @@ class Order(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    items = models.JSONField(default={})
 
     def __str__(self):
         return f"{self.id} ({self.first_name} {self.last_name})"
 
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT) # Protects order history if a product is deleted
-    quantity = models.PositiveIntegerField()
-    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2) # Captures the price at checkout
+# class OrderItem(models.Model):
+#     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product, on_delete=models.PROTECT) # Protects order history if a product is deleted
+#     quantity = models.PositiveIntegerField()
+#     price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2) # Captures the price at checkout
 
-    def __str__(self):
-        return f"{self.quantity}x {self.product.name} (Order {self.order.id})"
+#     def __str__(self):
+#         return f"{self.quantity}x {self.product.name} (Order {self.order.id})"
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items', null=True, blank=True)

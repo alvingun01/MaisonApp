@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import Product, Order, OrderItem, Cart
-from .serializers import ProductSerializer, OrderSerializer, OrderItemSerializer, CartSerializer, UserSerializer
+from .models import Product, Order, Cart
+from .serializers import ProductSerializer, OrderSerializer, CartSerializer, UserSerializer
 
 # Create your views here.
 class ProductListCreate(generics.ListCreateAPIView):
@@ -27,13 +27,6 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-class OrderItemViewSet(viewsets.ModelViewSet):
-    serializer_class = OrderItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return OrderItem.objects.filter(order__user=self.request.user)
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
