@@ -65,3 +65,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s cart"
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items', null=True, blank=True)
+    items = models.JSONField(default={})
+
+    def __str__(self):
+        return f"{self.user.username}'s wishlist"

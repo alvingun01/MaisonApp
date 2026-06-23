@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Product, Order, Cart
+from .models import Product, Order, Cart, Wishlist
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,6 +40,11 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class WishlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wishlist
+        fields = '__all__'
 
-
-
+    def create(self, validated_data):
+        wishlist = Wishlist.objects.create(**validated_data)
+        return wishlist

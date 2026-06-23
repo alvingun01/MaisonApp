@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import Product, Order, Cart
-from .serializers import ProductSerializer, OrderSerializer, CartSerializer, UserSerializer
+from .models import Product, Order, Cart, Wishlist
+from .serializers import ProductSerializer, OrderSerializer, CartSerializer, UserSerializer, WishlistSerializer
 
 # Create your views here.
 class ProductListCreate(generics.ListCreateAPIView):
@@ -73,3 +73,13 @@ class LoginView(APIView):
                 'user': UserSerializer(user).data
             }, status=status.HTTP_200_OK)
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+class WishlistViewSet(viewsets.ModelViewSet):
+    serializer_class = WishlistSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Wishlist.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
